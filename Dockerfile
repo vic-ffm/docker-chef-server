@@ -31,7 +31,7 @@ ADD backup.rb /opt/chef-server/embedded/bin/backup
 
 RUN chmod u+x /opt/chef-server/embedded/bin/backup
 
-VOLUME /var/opt/opscode/backup
+VOLUME /opt/chef-server/backups
 
 EXPOSE 80 443
 

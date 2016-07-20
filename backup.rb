@@ -5,7 +5,7 @@ require 'fileutils'
 
 MAX_BACKUPS=10
 
-BACKUP_DIR='/var/opt/opscode/backup'
+BACKUP_DIR='/opt/chef-server/backups'
 
 backups = Dir["#{BACKUP_DIR}/*"]
 if backups.size > MAX_BACKUPS
