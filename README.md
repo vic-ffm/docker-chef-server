@@ -10,7 +10,10 @@ A docker image running Chef 11 published. Run via:
 ## Prerequisites
 
 The `kernel.shmmax` and `kernel.shmall` sysctl values should be set to
-a high value on the host. 
+a high value on the host. Consider a command such as:
+
+    $ sysctl -w kernel.shmall=4194304
+    $ sysctl -w kernel.shmmax=17179869184
 
 ## Environment Variables
 
