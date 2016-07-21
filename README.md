@@ -29,8 +29,7 @@ Ports 80 (HTTP) and 443 (HTTPS) are exposed.
  - `docker kill -s HUP $CONTAINER_ID` will run `chef-server-ctl reconfigure`
  - `docker kill -s USR1 $CONTAINER_ID` will run `chef-server-ctl status`
 
-## First 
-
+## First
 
 First start will automatically run `chef-server-ctl reconfigure`. Subsequent starts will not run
 `reconfigure`, unless file `/var/opt/chef-server/bootstrapped` has been deleted. If you edit `chef-server.rb`
