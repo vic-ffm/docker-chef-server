@@ -3,7 +3,9 @@
 [![](http://dockeri.co/image/stocksoftware/chef-server)](https://hub.docker.com/r/stocksoftware/chef-server)
 [![Build Status](https://secure.travis-ci.org/stocksoftware/docker-chef-server.png?branch=master)](http://travis-ci.org/stocksoftware/docker-chef-server)
 
-A docker image running Chef 11 published. 
+A docker image running Chef 11 published. Run via:
+
+    $  docker run -it --name chef_server -p 80:80 -p 443:443 stocksoftware/chef-server
 
 ## Prerequisites
 
