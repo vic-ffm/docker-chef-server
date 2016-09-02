@@ -18,7 +18,5 @@ end
 
 new_backup_dir = "#{BACKUP_DIR}/#{DateTime.now.strftime('%Y%m%dT%H%M%S')}"
 
-FileUtils.mkdir_p new_backup_dir
-
 puts "Backing up to #{new_backup_dir}"
-system("cd #{new_backup_dir} && /opt/chef-server/embedded/bin/knife download --server-url https://127.0.0.1/ --user admin --key /etc/chef-server/admin.pem /") || (raise "Failed to backup to directory #{new_backup_dir}")
+system("/opt/chef-server/embedded/bin/knife backup export --server-url https://127.0.0.1/ --user admin --key /etc/chef-server/admin.pem -D /opt/chef-server/backups/#{new_backup_dir}") || (raise "Failed to backup to directory #{new_backup_dir}")
