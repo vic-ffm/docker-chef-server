@@ -21,7 +21,7 @@ RUN apt-get update -q --yes && \
     apt-get install -q --yes git curl build-essential libxml2-dev libxslt1-dev runit -y && \
     curl -L https://packages.chef.io/stable/ubuntu/12.04/chef-server_${CHEF_VERSION}-1_amd64.deb > /tmp/chef-server.deb && \
     dpkg -i /tmp/chef-server.deb && \
-    /opt/chef-server/embedded/bin/gem install knife-backup -v0.0.3 --ignore-dependencies && \
+    /opt/chef-server/embedded/bin/gem install knife-backup -v0.0.12 --ignore-dependencies && \
     rm -f /tmp/chef-server.deb && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
