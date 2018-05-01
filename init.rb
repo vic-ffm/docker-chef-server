@@ -27,7 +27,7 @@ def reconfigure! reason=nil
     if reason
       log "#{reason}, but cannot reconfigure: already running"
     else
-      log 'Cannot reconfigure: already running'
+      log "Cannot reconfigure: already running"
     end
     return
   end
@@ -35,7 +35,7 @@ def reconfigure! reason=nil
   if reason
     log "#{reason}, reconfiguring"
   else
-    log 'Reconfiguring'
+    log "Reconfiguring"
   end
 
   $reconf_pid = run! '/usr/bin/chef-server-ctl', 'reconfigure' do
@@ -80,21 +80,21 @@ log "Starting #{$PROGRAM_NAME}"
       File.write "/proc/sys/kernel/#{param}", value.to_s
     rescue
       log "Cannot set kernel.#{param} to #{value}: #{$!}"
-      log 'You may need to run the container in privileged mode or set sysctl on host.'
+      log "You may need to run the container in privileged mode or set sysctl on host."
       raise
     end
   end
 end
 
 log 'Preparing configuration ...'
-FileUtils.mkdir_p %w'/var/opt/chef-server/log /var/opt/chef-server/etc /.chef/env', verbose: true
-FileUtils.cp '/.chef/chef-server.rb', '/var/opt/chef-server/etc', verbose: true
+FileUtils.mkdir_p %w'/var/opt/opscode/log /var/opt/opscode/etc /.chef/env', verbose: true
+FileUtils.cp '/.chef/chef-server.rb', '/var/opt/opscode/etc', verbose: true
 
-%w'PUBLIC_URL'.each do |var|
+%w'PUBLIC_URL OC_ID_ADMINISTRATORS'.each do |var|
   File.write(File.join('/.chef/env', var), ENV[var].to_s)
 end
 
-$runsvdir_pid = run! '/opt/chef-server/embedded/bin/runsvdir-start' do
+$runsvdir_pid = run! '/opt/opscode/embedded/bin/runsvdir-start' do
   log "runsvdir exited: #{$?}"
   if $?.success? || $?.exitstatus == 111
     exit
@@ -120,7 +120,7 @@ Signal.trap 'USR1' do
   run! '/usr/bin/chef-server-ctl', 'status'
 end
 
-unless File.exist? '/var/opt/chef-server/bootstrapped'
+unless File.exist? '/var/opt/opscode/bootstrapped'
   reconfigure! 'Not bootstrapped'
 end
 

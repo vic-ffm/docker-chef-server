@@ -1,3 +1,5 @@
+# -*- conf -*-
+
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,29 +13,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM ubuntu:12.04
 
-MAINTAINER Stock Software
+## Credits
+# The project is heavily inspired by [3ofcoins/docker-chef-server](https://github.com/3ofcoins/docker-chef-server).
+# All credit goes to the original authors.
 
-ENV CHEF_VERSION=11.1.7
-
-RUN apt-get update -q --yes && \
-    apt-get install -q --yes git curl build-essential libxml2-dev libxslt1-dev runit -y && \
-    curl -L https://packages.chef.io/stable/ubuntu/12.04/chef-server_${CHEF_VERSION}-1_amd64.deb > /tmp/chef-server.deb && \
-    dpkg -i /tmp/chef-server.deb && \
-    /opt/chef-server/embedded/bin/gem install knife-backup -v0.0.12 --ignore-dependencies && \
-    rm -f /tmp/chef-server.deb && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-
-ADD chef-server.rb /etc/chef-server/chef-server.rb
-ADD chef-server.rb ${HOME}/.chef/chef-server.rb
-ADD init.rb /init.rb
-ADD backup.rb /opt/chef-server/embedded/bin/backup
-
-RUN chmod u+x /opt/chef-server/embedded/bin/backup
-
-VOLUME /opt/chef-server/backups
+FROM ubuntu:16.04
+MAINTAINER FFMVic <support@ffm.vic.gov.au>
 
 EXPOSE 80 443
+VOLUME /var/opt/opscode
 
-CMD [ "/opt/chef-server/embedded/bin/ruby", "/init.rb" ]
+COPY install.sh /tmp/install.sh
+
+RUN [ "/bin/sh", "/tmp/install.sh" ]
+
+COPY init.rb /init.rb
+COPY chef-server.rb /.chef/chef-server.rb
+COPY logrotate /opt/opscode/sv/logrotate
+COPY knife.rb /etc/chef/knife.rb
+COPY backup.sh /usr/local/bin/chef-server-backup
+
+ENV KNIFE_HOME /etc/chef
+
+CMD [ "/opt/opscode/embedded/bin/ruby", "/init.rb" ]

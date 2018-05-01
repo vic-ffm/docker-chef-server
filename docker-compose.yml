@@ -1,0 +1,19 @@
+version: "2"
+
+services:
+  chef12_server:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - /mnt/shares/AppData/Chef/EMSv2:/opt/chef-server/backups
+    ports:
+      - "2080:80"
+      - "2081:443"
+      - "443:443"
+    shm_size: 1700M
+    environment:
+      PUBLIC_URL: "https://devapp01.ffm.vic.gov.au/"
+volumes:
+  chef_backups:

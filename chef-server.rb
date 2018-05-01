@@ -1,24 +1,21 @@
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-_env = Hash[ Dir['/.chef/env/*'].map { |f| [ File.basename(f), File.read(f).strip ] } ]
+# THIS FILE WILL BE OVERWRITTEN ON CONTAINER START.  Please create a
+# new file named `chef-server-local.rb` for custom settings.
+
+# Read parameters that originally came from Docker's environment
+# variables, and were saved to a file to support docker-enter
+
+_env = Hash[ Dir['/.chef/env/*']
+    .map { |f| [ File.basename(f), File.read(f).strip ] } ]
 
 require 'uri'
-_uri = ::URI.parse(ENV['PUBLIC_URL'] || 'https://127.0.0.1/')
+_uri = ::URI.parse(_env['PUBLIC_URL'] || 'https://127.0.0.1/')
 
 # Set environment variables that may be missing when chef-server-ctl
-# runs from docker exec
+# runs from docker-enter
 ENV['HOME']     ||= '/'
+ENV['HOSTNAME'] ||= File.read('/etc/hostname').strip
+ENV['PATH']     ||= '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+ENV['EDITOR']   ||= 'vim'
 
 if _uri.port == _uri.default_port
   api_fqdn _uri.hostname
@@ -31,5 +28,8 @@ bookshelf['url'] = _uri.to_s
 nginx['enable_non_ssl'] = true
 nginx['url'] = _uri.to_s
 nginx['x_forwarded_proto'] = _uri.scheme
-lb['fqdn'] = _uri.hostname
-lb['server_name'] = _uri.hostname
+oc_id['administrators'] = _env['OC_ID_ADMINISTRATORS'].to_s.split(',')
+opscode_erchef['base_resource_url'] = _uri.to_s
+
+_local = File.join(File.dirname(__FILE__), 'chef-server-local.rb')
+instance_eval(File.read(_local), _local) if File.exist?(_local)
